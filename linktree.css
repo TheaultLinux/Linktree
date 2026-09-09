@@ -1,3 +1,11 @@
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+:focus {
+    outline: none;
+}
+
 body, html {
     margin: 0;
     padding: 0;
@@ -237,6 +245,48 @@ main{
 @keyframes popOut {
     0%   { transform: scale(1) translateY(0); opacity: 1; }
     100% { transform: scale(0.7) translateY(-20px); opacity: 0; }
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 5% 3%;
+        gap: 4%;
+    }
+
+    #pfp {
+        width: 44px;
+        height: 44px;
+    }
+
+    #title {
+        font-size: 1.1rem;
+        margin-left: 2%;
+    }
+
+    .app {
+        width: 88%;
+        min-width: 0;
+        padding: 4% 6%;
+        margin: 2.5% 0;
+        gap: 5%;
+    }
+
+    .app h1 {
+        font-size: 1rem;
+    }
+
+    #popup {
+        top: 12px;
+        left: 12px;
+        max-width: calc(100% - 24px);
+        padding: 16px 18px;
+        font-size: 0.95rem;
+    }
+
+    #popup button {
+        padding: 7px 14px;
+        font-size: 0.85rem;
+    }
 }
 
 
