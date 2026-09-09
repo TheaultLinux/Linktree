@@ -5,40 +5,133 @@ body, html {
     background-color: rgb(47, 47, 47);
     color: rgb(212, 212, 212);
     scrollbar-width: none;
+    overflow-x: hidden;
+}
+
+#background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#background img {
+    position: absolute;
+    opacity: 0.2;
+    cursor: pointer;
+    pointer-events: auto;
+    animation: spin var(--spin-duree, 15s) linear infinite,
+               drift var(--drift-duree, 20s) linear infinite;
+    transition: opacity 0.2s ease;
+}
+
+#background img:hover {
+    opacity: 0.45;
+}
+
+#background img.tapped {
+    pointer-events: none;
+    animation: tapout 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+@keyframes tapout {
+    0%   { transform: scale(1) translate(0, 0); opacity: 0.45; }
+    12%  { transform: scale(1.4, 0.7) translate(0, 0); opacity: 0.8; }
+    30%  { transform: scale(1.1) translate(var(--kx, 0), var(--ky, 0)); opacity: 0.6; }
+    100% { transform: scale(0) translate(calc(var(--kx, 0) * 2.2), calc(var(--ky, 0) * 2.2)); opacity: 0; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes drift {
+    from { left: -20%; }
+    to { left: 120%; }
 }
 
 
 header {
+    position: relative;
+    z-index: 1;
     display: flex;
-    justify-content: left;
-    padding-left: 1%;
+    justify-content: center;
+    align-items: center;
+    padding: 2%;
+    gap: 1%;
 }
 
 #title {
-    margin-top: 7px;
+    margin: 0;
     margin-left: 1%;
+    letter-spacing: 1px;
 }
 
 #pfp {
     border-radius: 100%;
+    box-shadow: 0 0 15px rgba(212, 212, 212, 0.3);
 }
 
 .app {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid;
-    border-color: rgb(212, 212, 212);
+    gap: 2%;
     width: 20%;
     min-width: 300px;
-    border-radius: 45px;
+    padding: 1% 2%;
+    border-radius: 18px;
     margin: 1%;
+    color: rgb(212, 212, 212);
+    background: linear-gradient(135deg, rgba(55, 55, 55, 0.55), rgba(40, 40, 40, 0.35));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 212, 212, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.25s ease,
+                border-color 0.25s ease,
+                color 0.25s ease;
+}
+
+.app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    background: linear-gradient(135deg, rgba(212, 212, 212, 0.95), rgba(150, 150, 150, 0.85));
+    transition: opacity 0.25s ease;
+}
+
+.app::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -2;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(212, 212, 212, 0.6), rgba(212, 212, 212, 0));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
 }
 
 .app h1 {
-    margin-top: 22px;
-    margin-left: 1%;
-    font-size: 2 rem;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
 }
 
 a, a:active, a:focus, a:hover {
@@ -49,15 +142,101 @@ a, a:active, a:focus, a:hover {
 }
 
 .app:hover {
-    background-color: rgb(212, 212, 212);
-    color: rgb(47, 47, 47);
-    transform: scale(1.1);
+    color: rgb(30, 30, 30);
+    transform: translateY(-3px) scale(1.03);
+    border-color: rgba(212, 212, 212, 0.4);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45),
+                0 0 24px rgba(212, 212, 212, 0.25);
+}
+
+.app:hover::before {
+    opacity: 1;
+}
+
+.app:hover::after {
+    opacity: 1;
+}
+
+.app:active {
+    transform: translateY(-1px) scale(1.01);
 }
 main{
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     width: 100%;
     flex-direction: column;
+}
+
+#popup {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 100;
+    max-width: 280px;
+    padding: 20px 22px;
+    border-radius: 18px;
+    color: rgb(212, 212, 212);
+    background: linear-gradient(135deg, rgba(55, 55, 55, 0.75), rgba(40, 40, 40, 0.55));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 212, 212, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    font-size: 1rem;
+    line-height: 1.4;
+    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+#popup.hide {
+    animation: popOut 0.25s ease both;
+}
+
+#popup p {
+    margin: 0 0 16px 0;
+    font-weight: 500;
+}
+
+#popup .popup-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+#popup button {
+    padding: 8px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(212, 212, 212, 0.25);
+    background: rgba(212, 212, 212, 0.08);
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+}
+
+#popup button:hover {
+    background: linear-gradient(135deg, rgba(212, 212, 212, 0.95), rgba(150, 150, 150, 0.85));
+    color: rgb(30, 30, 30);
+    transform: translateY(-2px) scale(1.05);
+    border-color: rgba(212, 212, 212, 0.5);
+}
+
+#popup button:active {
+    transform: translateY(0) scale(1.01);
+}
+
+@keyframes popIn {
+    0%   { transform: scale(0.7) translateY(-20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes popOut {
+    0%   { transform: scale(1) translateY(0); opacity: 1; }
+    100% { transform: scale(0.7) translateY(-20px); opacity: 0; }
 }
 
 
